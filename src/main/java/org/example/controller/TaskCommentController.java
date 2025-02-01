@@ -16,7 +16,7 @@ public class TaskCommentController {
     private final TaskCommentService taskCommentService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('CIENT')")
     public TaskComment createComment(@RequestParam("id") int id) {
         TaskComment comment = taskCommentService.getTaskCommentById(id);
         taskCommentService.createTaskComment(comment);
@@ -24,7 +24,7 @@ public class TaskCommentController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('CLIENT')")
     public TaskComment deleteComment(@RequestParam("id") int id) {
         TaskComment comment = taskCommentService.getTaskCommentById(id);
         taskCommentService.deleteTaskComment(comment);

@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/springAuth
     username: postgres
-    password: pleasecomein
+    password: x`
     driver-class-name: org.postgresql.Driver
   security:
     oauth2:
@@ -24,7 +24,7 @@ spring:
         registration:
           keycloak:
             client-id: yahor-api
-            client-secret: RTH2SuOaJXK8adVFyVv7v7dyKH9tKajZ
+            client-secret: hbNHBPuUpFAyA7Kg3DjwsNIenCBirN27
             scope: openid
   web:
     resources:
