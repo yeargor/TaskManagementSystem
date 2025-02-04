@@ -1,4 +1,4 @@
-package org.example.model.tasks;
+package org.example.model.task;
 
 public enum TaskStatus {
     InProgress,

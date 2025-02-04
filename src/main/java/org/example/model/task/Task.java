@@ -1,8 +1,10 @@
-package org.example.model.tasks;
+package org.example.model.task;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.model.User;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +18,7 @@ import java.util.Set;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String header;
     private String description;
     @Enumerated(EnumType.STRING)

@@ -1,8 +1,9 @@
-package org.example.model.tasks;
+package org.example.model.task;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.model.User;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity

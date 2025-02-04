@@ -1,43 +1,54 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.model.tasks.Task;
-import org.example.service.tasks.TaskService;
+import org.example.model.task.DTO.TaskFilterDTO;
+import org.example.model.task.Task;
+import org.example.service.TaskService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Arrays;
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/tasks")
 public class TaskController {
     private final TaskService taskService;
 
-    @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<Task> getTasks() {
-        return taskService.getAllTasks();
-    }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Task createTask(@RequestBody Task task) {
-        return taskService.createTask(task);
+    public ResponseEntity<?> createTask(@RequestBody Task task,
+                           @RequestParam(value = "executorIds", required = false) String executorIdsStr) {
+        List<String> executorIds = null;
+        if (executorIdsStr != null && !executorIdsStr.isEmpty()) {
+            executorIds = Arrays.asList(executorIdsStr.split(","));
+        }
+        return ResponseEntity.ok(taskService.createTask(task, executorIds));
     }
 
-    @PutMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public Task updateTask(@RequestBody Task task) {
-        taskService.saveTask(task);
-        return task;
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT')")
+    public ResponseEntity<List<Task>> getTasks(@RequestBody TaskFilterDTO filterDto) {
+        return ResponseEntity.ok(taskService.getFilteredTasks(filterDto));
     }
 
-    @DeleteMapping
+    @PutMapping("/{taskId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Task deleteTask(@RequestBody Task task) {
-        taskService.deleteTask(task);
-        return task;
+    public ResponseEntity<?> updateTask(@PathVariable Integer taskId,
+                           @RequestBody Task task,
+                           @RequestParam(value = "executorIds", required = false) String executorIdsStr) {
+        List<String> executorIds = null;
+        if (executorIdsStr != null && !executorIdsStr.isEmpty()) {
+            executorIds = Arrays.asList(executorIdsStr.split(","));
+        }
+        return ResponseEntity.ok(taskService.updateTask(taskId, task, executorIds));
+    }
+
+    @DeleteMapping("/{taskId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteTask(@PathVariable Integer taskId) {
+        return ResponseEntity.ok("Комментарий удалён");
     }
 }

@@ -1,6 +1,5 @@
 package org.example.controller;
 
-import org.example.model.tasks.User;
 import org.example.service.KeycloakService;
 import lombok.RequiredArgsConstructor;
 import org.example.service.UserService;
@@ -8,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -21,8 +19,8 @@ public class HomeController {
 
     @GetMapping("/")
     @PreAuthorize("hasRole('CLIENT')")
-    public String home(){
-        return "home";
+    public ResponseEntity home(){
+        return ResponseEntity.ok("well");
     }
 
     @GetMapping("/accessDenied")
@@ -32,11 +30,5 @@ public class HomeController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Map<String, Object>>> getUsers() {
         return ResponseEntity.ok(keycloakService.getUsers());
-    }
-
-    @PostMapping("/sync")
-    public ResponseEntity<List<User>> syncUsers() {
-        List<User> newUsers = userService.syncUsersFromKeycloak();
-        return ResponseEntity.ok(newUsers);
     }
 }

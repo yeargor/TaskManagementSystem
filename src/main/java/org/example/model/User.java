@@ -1,4 +1,4 @@
-package org.example.model.tasks;
+package org.example.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +16,14 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "users")
 public class User {
     @Id
-    @Column(columnDefinition = "TEXT")
     private String id;
+    private String firstName;
+    private String lastName;
+    private String username;
+    @Column(unique = true)
+    private String email;
+
+    public User(String id) {
+        this.id = id;
+    }
 }

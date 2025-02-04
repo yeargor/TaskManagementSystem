@@ -16,6 +16,18 @@ services:
       interval: 5s
       retries: 5
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: egorapotcha@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: pleasecomein
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
   my-keycloak:
     image: keycloak/keycloak:22.0.5
     container_name: my-keycloak
@@ -24,20 +36,19 @@ services:
       my-postgres:
         condition: service_healthy
     environment:
-#      KC_DB: postgres
-#      KC_DB_URL: jdbc:postgresql://my-postgres:5432/springAuth
-#      KC_DB_USERNAME: postgres
-#      KC_DB_PASSWORD: pleasecomein
+      spi-event-listener-custom-event-listener-webhookUrl: http://192.168.100.248:8081/keycloak-events/user-updated
+      spi-event-listener-custom-event-listener-secretKey: keycloak_secret
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD : admin
     ports:
       - "8080:8080"
     volumes:
-      - ./keycloak-custom-0.1.0-SNAPSHOT-jar-with-dependencies.jar:/opt/keycloak/providers/keycloak-custom.jar
-#      - ./realms/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ./keycloak-custom-providers-2.2.3-SNAPSHOT-jar-with-dependencies.jar:/opt/keycloak/providers/keycloak-custom44.jar
+      - ./realms/realm-export.json:/opt/keycloak/data/import/realm-export.json
     command:
       - "start-dev"
-      - "--spi-user-storage-provider=custom-user-provider"
-      - "--spi-user-storage-custom-user-provider-enabled=true"
+      - "--import-realm"
+
 volumes:
   postgres-data:
+  pgadmin-data:
