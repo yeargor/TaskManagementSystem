@@ -15,7 +15,7 @@ docker-compose up --build
 4. **Visit the** [Swagger panel](http://localhost:8081/swagger-ui/index.html#/ "Swagger panel") t**o view all available APIs.**
 5. **To authorize your requests, you must provide the client-id and client-secret that the Spring application uses to interact with Keycloak.**
 
-![Swagger Oauth parameters]( "readme-images/screen1.jpg")
+![Swagger Oauth parameters](https://github.com/yeargor/TaskManagementSystem/blob/57fc16b91d51261090e3550d88c01a2e9ebf2953/readme-images/screen1.jpg)
 
 Don't forget to check all the boxes and supply the correct client-id and client-secret values. These are located in the application.yml file. For your convenience, here are the values you can copy:
 ```
@@ -26,7 +26,7 @@ client-secret : p8HkF6k5wHzL3qYRCdjjaQEyRCNPKTwO
 Swagger will redirect you to the Keycloak login page, where you can log in as either an administrator or a client.
 ## Keycloak users credentials
 
-![Keycloak login page]( "readme-images/screen2.jpg")
+![Keycloak login page](https://github.com/yeargor/TaskManagementSystem/blob/57fc16b91d51261090e3550d88c01a2e9ebf2953/readme-images/screen2.jpg)
 
 **Administrator**
 ```
