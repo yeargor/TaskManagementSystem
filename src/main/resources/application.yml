@@ -7,7 +7,7 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:postgresql://localhost:5432/springAuth
+    url: jdbc:postgresql://my-postgres:5432/springAuth
     username: postgres
     password: pleasecomein
     driver-class-name: org.postgresql.Driver
@@ -15,11 +15,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/Yahor
+          issuer-uri: http://my-keycloak:8080/realms/Yahor
       client:
         provider:
           keycloak:
-            issuer-uri: http://localhost:8080/realms/Yahor
+            issuer-uri: http://my-keycloak:8080/realms/Yahor
             user-name-attribute: preferred_username
         registration:
           keycloak:
@@ -29,10 +29,6 @@ spring:
   web:
     resources:
       add-mappings: true
-keycloak:
-  webhook:
-    secret:
-      keycloak_secret
 
 logging:
   level:

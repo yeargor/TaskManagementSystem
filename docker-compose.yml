@@ -32,22 +32,48 @@ services:
     image: keycloak/keycloak:22.0.5
     container_name: my-keycloak
     restart: always
-    depends_on:
-      my-postgres:
-        condition: service_healthy
     environment:
-      spi-event-listener-custom-event-listener-webhookUrl: http://192.168.100.248:8081/keycloak-events/user-updated
-      spi-event-listener-custom-event-listener-secretKey: keycloak_secret
+      spi-event-listener-custom-event-listener-webhookUrl: http://spring-app:8081/keycloak-events/user-updated
+      spi-event-listener-custom-event-listener-secretKey: p8HkF6k5wHzL3qYRCdjjaQEyRCNPKTwO
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD : admin
     ports:
       - "8080:8080"
     volumes:
-      - ./keycloak-custom-providers-2.2.3-SNAPSHOT-jar-with-dependencies.jar:/opt/keycloak/providers/keycloak-custom44.jar
+      - ./keycloak-custom-providers-0.2.0-SNAPSHOT-jar-with-dependencies.jar:/opt/keycloak/providers/keycloak-custom2.jar
       - ./realms/realm-export.json:/opt/keycloak/data/import/realm-export.json
     command:
       - "start-dev"
       - "--import-realm"
+    depends_on:
+      my-postgres:
+        condition: service_healthy
+    healthcheck:
+      interval: 15s
+      timeout: 15s
+      retries: 15
+      test:
+        [
+          "CMD-SHELL",
+          'exec 3<>/dev/tcp/localhost/8080; echo -e "GET /health/ready HTTP/1.1\nhost: localhost:8080\n" >&3; timeout --preserve-status 1 cat <&3 | grep -m 1 status | grep -m 1 UP; ERROR=$?; exec 3<&-; exec 3>&-; exit $ERROR'
+        ]
+#юзеру нужно дать роль просмотра юзеров+ не забывай чекать client-secret
+  #проверить апи спринг сервиса+чекнуь апи кейклока и понять, как это показать и как
+    #это должно работать
+      #чекнуть, как экспортировать юзеров в рилм
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-app
+    restart: on-failure
+    ports:
+      - "8081:8081"
+    depends_on:
+      my-postgres:
+        condition: service_healthy
+      my-keycloak:
+        condition: service_healthy
 
 volumes:
   postgres-data:

@@ -16,7 +16,7 @@ import java.util.Map;
 @Slf4j
 public class KeycloakEventController {
 
-    @Value("${keycloak.webhook.secret}")  // Читаем секретный ключ из настроек
+    @Value("${spring.security.oauth2.client.registration.keycloak.client-secret}") // Читаем секретный ключ из настроек
     private String expectedSecret;
 
     private final UserService userService;
