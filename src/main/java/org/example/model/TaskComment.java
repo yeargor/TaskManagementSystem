@@ -1,10 +1,10 @@
-package org.example.model.task;
+package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.model.User;
+import org.example.model.task.Task;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity

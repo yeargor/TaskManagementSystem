@@ -1,7 +1,7 @@
 package org.example.service;
 
 import org.example.model.User;
-import org.example.model.task.DTO.TaskCreateDTO;
+import org.example.DTO.Task.TaskCreateDTO;
 import org.example.model.task.Task;
 import org.example.model.task.TaskPriority;
 import org.example.model.task.TaskStatus;

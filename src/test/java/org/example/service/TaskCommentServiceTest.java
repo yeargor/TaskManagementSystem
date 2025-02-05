@@ -1,7 +1,7 @@
 package org.example.service;
 
 import org.example.model.task.Task;
-import org.example.model.task.TaskComment;
+import org.example.model.TaskComment;
 import org.example.repository.ITaskCommentRepository;
 import org.example.repository.ITaskRepository;
 import org.junit.jupiter.api.BeforeEach;

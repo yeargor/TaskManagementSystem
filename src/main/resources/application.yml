@@ -30,16 +30,5 @@ spring:
     resources:
       add-mappings: true
 
-logging:
-  level:
-    root:
-      info
-    org.example:
-      DEBUG
-    org.springframework.security:
-      DEBUG
-    org.springframework.web:
-      DEBUG
-
 server:
   port: 8081

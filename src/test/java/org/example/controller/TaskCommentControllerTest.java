@@ -1,9 +1,9 @@
 package org.example.controller;
 
-import org.example.model.DTO.CommentDTO;
+import org.example.DTO.CommentDTO;
 import org.example.model.User;
 import org.example.model.task.Task;
-import org.example.model.task.TaskComment;
+import org.example.model.TaskComment;
 import org.example.service.TaskCommentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

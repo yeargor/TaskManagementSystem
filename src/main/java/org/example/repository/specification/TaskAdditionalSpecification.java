@@ -2,7 +2,7 @@ package org.example.repository.specification;
 
 import jakarta.persistence.criteria.Predicate;
 import org.example.model.task.Task;
-import org.example.model.task.DTO.TaskFilterDTO;
+import org.example.DTO.Task.TaskFilterDTO;
 import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;

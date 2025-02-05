@@ -19,7 +19,7 @@ public class KeycloakService {
         if (authentication instanceof JwtAuthenticationToken jwtAuth) {
             return jwtAuth.getToken().getTokenValue();
         }
-        throw new IllegalStateException("Не удалось получить токен пользователя");
+        throw new IllegalStateException("Cant't get current access token");
     }
 
     @Deprecated

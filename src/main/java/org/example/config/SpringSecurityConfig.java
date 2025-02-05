@@ -90,7 +90,7 @@ public class SpringSecurityConfig {
                     authorities,
                     user.getIdToken(),
                     user.getUserInfo(),
-                    "sub" //проверить, нужно ли возвращать
+                    "sub"
             );
         };
     }

@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.model.DTO.CommentDTO;
+import org.example.DTO.CommentDTO;
 import org.example.service.TaskCommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

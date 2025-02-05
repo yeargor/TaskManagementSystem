@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.model.DTO.UserDTO;
-import org.example.model.DTO.UserDeleteDTO;
+import org.example.DTO.User.UserDTO;
+import org.example.DTO.User.UserDeleteDTO;
 import org.example.model.User;
 import org.example.repository.IUserRepository;
 import org.springframework.security.core.Authentication;
@@ -24,38 +24,24 @@ public class UserService {
     private final ObjectMapper objectMapper;
 
     public void createOrUpdateUserFromPayload(JsonNode payloadNode) {
-        try {
-            UserDTO userDto = objectMapper.treeToValue(payloadNode, UserDTO.class);
-            User user = userRepository.findById(userDto.getId())
-                    .orElseGet(() -> new User(userDto.getId()));
+        UserDTO userDto = mapToUserDTO(payloadNode);
+        User user = userRepository.findById(userDto.getId())
+                .orElseGet(() -> new User(userDto.getId()));
 
-            user.setUsername(userDto.getUsername());
-            user.setFirstName(userDto.getFirstName());
-            user.setLastName(userDto.getLastName());
-            user.setEmail(userDto.getEmail());
+        updateUserFromDTO(user, userDto);
 
-            userRepository.save(user);
-        } catch (Exception e) {
-            throw new RuntimeException("Error processing user payload", e);
-        }
+        userRepository.save(user);
     }
 
     public void deleteUserByPayload(JsonNode payloadNode) {
-        try {
-            UserDeleteDTO deleteDto = objectMapper.treeToValue(payloadNode, UserDeleteDTO.class);
-            userRepository.deleteById(deleteDto.getId());
-        } catch (Exception e) {
-            throw new RuntimeException("Error processing delete payload", e);
-        }
+        UserDeleteDTO deleteDto = mapToUserDeleteDTO(payloadNode);
+        userRepository.deleteById(deleteDto.getId());
     }
 
     public User getCurrentUser() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof JwtAuthenticationToken jwtAuth) {
-            String userId = jwtAuth.getTokenAttributes().get("sub").toString();
-            return userRepository.findById(userId).orElse(null);
-        }
-        throw new IllegalStateException("Ошибка аутентификации");
+        return getAuthenticatedUserId()
+                .flatMap(userRepository::findById)
+                .orElseThrow(() -> new IllegalStateException("User not authenticated"));
     }
 
     public boolean currentUserHasRole(String role) {
@@ -70,5 +56,36 @@ public class UserService {
 
     public List<User> findAll() {
         return (List<User>) userRepository.findAll();
+    }
+
+    private UserDTO mapToUserDTO(JsonNode payloadNode) {
+        try {
+            return objectMapper.treeToValue(payloadNode, UserDTO.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Error mapping JSON to UserDTO", e);
+        }
+    }
+
+    private UserDeleteDTO mapToUserDeleteDTO(JsonNode payloadNode) {
+        try {
+            return objectMapper.treeToValue(payloadNode, UserDeleteDTO.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Error mapping JSON to UserDeleteDTO", e);
+        }
+    }
+
+    private void updateUserFromDTO(User user, UserDTO userDto) {
+        user.setUsername(userDto.getUsername());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+    }
+
+    private Optional<String> getAuthenticatedUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof JwtAuthenticationToken jwtAuth) {
+            return Optional.ofNullable(jwtAuth.getTokenAttributes().get("sub").toString());
+        }
+        return Optional.empty();
     }
 }

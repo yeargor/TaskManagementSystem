@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.model.TaskComment;
 import org.example.model.User;
 import java.util.HashSet;
 import java.util.List;

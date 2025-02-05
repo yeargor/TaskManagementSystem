@@ -1,8 +1,8 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.model.task.DTO.TaskCreateDTO;
-import org.example.model.task.DTO.TaskFilterDTO;
+import org.example.DTO.Task.TaskCreateDTO;
+import org.example.DTO.Task.TaskFilterDTO;
 import org.example.model.task.Task;
 import org.example.model.task.TaskPriority;
 import org.example.model.task.TaskStatus;
