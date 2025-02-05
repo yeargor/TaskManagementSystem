@@ -1,10 +1,10 @@
 package org.example.model.task;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.model.User;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +26,7 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private TaskPriority priority;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskComment> comment;
 

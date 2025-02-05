@@ -19,9 +19,10 @@ public class KeycloakService {
         if (authentication instanceof JwtAuthenticationToken jwtAuth) {
             return jwtAuth.getToken().getTokenValue();
         }
-        throw new IllegalStateException("Не удалось получить токен пользователя"); //redo
+        throw new IllegalStateException("Не удалось получить токен пользователя");
     }
 
+    @Deprecated
     public List<Map<String, Object>> getUsers() {
         String url = "http://localhost:8080/admin/realms/Yahor/users";
         String token = getCurrentAccessToken();

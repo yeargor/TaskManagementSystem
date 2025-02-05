@@ -8,11 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
 @RestController
-@RequestMapping("/keycloak-events/user-updated")  // Исправленный путь, чтобы совпадал с SPI
+@RequestMapping("/keycloak-events/user-updated")
 @Slf4j
 public class KeycloakEventController {
 
@@ -32,7 +31,6 @@ public class KeycloakEventController {
             @RequestHeader("X-Keycloak-Secret") String receivedSecret,
             @RequestBody Map<String, Object> eventData) {
 
-        // Проверяем секретный ключ
         if (!expectedSecret.equals(receivedSecret)) {
             log.warn("Unauthorized request: invalid secret");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden: Invalid secret");
@@ -41,7 +39,6 @@ public class KeycloakEventController {
         try {
             log.info("Received Keycloak event: {}", eventData);
 
-            // Извлекаем eventType
             String eventType = (String) eventData.get("eventType");
 
             JsonNode payloadNode;
@@ -52,13 +49,11 @@ public class KeycloakEventController {
             }
             log.info("Extracted eventType: {}. Payload: {}", eventType, payloadNode.toString());
 
-            // Дополнительная проверка: убедимся, что payloadNode является объектом и содержит "id"
             if (!payloadNode.isObject() || !payloadNode.has("id")) {
                 log.error("Payload is null or missing 'id'. PayloadNode: {}", payloadNode.toString());
                 return ResponseEntity.badRequest().body("Invalid payload");
             }
 
-            // Выбираем действие в зависимости от eventType
             switch (eventType != null ? eventType : "CREATE") {
                 case "CREATE":
                 case "UPDATE":

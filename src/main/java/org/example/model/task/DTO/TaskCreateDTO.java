@@ -1,21 +1,18 @@
 package org.example.model.task.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.model.task.TaskPriority;
 import org.example.model.task.TaskStatus;
+import java.util.List;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskFilterDTO {
+public class TaskCreateDTO {
     private String header;
+    private String description;
     private TaskStatus status;
     private TaskPriority priority;
-    private int page;
-    @Builder.Default
-    private int size = 10;
+    private List<String> executorIds;
 }

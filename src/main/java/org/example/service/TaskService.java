@@ -2,6 +2,7 @@ package org.example.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.model.User;
+import org.example.model.task.DTO.TaskCreateDTO;
 import org.example.model.task.DTO.TaskFilterDTO;
 import org.example.model.task.Task;
 import org.example.repository.ITaskRepository;
@@ -22,15 +23,19 @@ public class TaskService {
     private final ITaskRepository taskRepository;
     private final UserService userService;
 
-    public Task createTask(Task task, List<String> executorIds) {
-        // Устанавливаем автора как текущего пользователя
+    public Task createTask(TaskCreateDTO taskCreateDTO) {
         User currentUser = userService.getCurrentUser();
+
+        Task task = new Task();
+        task.setHeader(taskCreateDTO.getHeader());
+        task.setDescription(taskCreateDTO.getDescription());
+        task.setStatus(taskCreateDTO.getStatus());
+        task.setPriority(taskCreateDTO.getPriority());
         task.setAuthor(currentUser);
 
-        // Обработка списка исполнителей
         Set<User> executors = new HashSet<>();
-        if (executorIds != null) {
-            for (String executorId : executorIds) {
+        if (taskCreateDTO.getExecutorIds() != null) {
+            for (String executorId : taskCreateDTO.getExecutorIds()) {
                 userService.findById(executorId).ifPresent(executors::add);
             }
         }
@@ -39,7 +44,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public List<Task> getFilteredTasks(TaskFilterDTO filterDto) {
+    public List<Task> getAllMyTasks(TaskFilterDTO filterDto) {
         String currentUserId = userService.getCurrentUser().getId();
 
         Specification<Task> securitySpec = TaskSecuritySpecification.belongsToUser(currentUserId);
@@ -53,20 +58,18 @@ public class TaskService {
         return taskPage.getContent();
     }
 
-    public Task updateTask(Integer taskId, Task task, List<String> executorIds) {
+    public Task updateTask(Integer taskId, TaskCreateDTO taskCreateDTO) {
         Task existingTask = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Задача с id " + taskId + " не найдена"));
 
-        // Обновляем основные поля
-        existingTask.setHeader(task.getHeader());
-        existingTask.setDescription(task.getDescription());
-        existingTask.setStatus(task.getStatus());
-        existingTask.setPriority(task.getPriority());
+        existingTask.setHeader(taskCreateDTO.getHeader());
+        existingTask.setDescription(taskCreateDTO.getDescription());
+        existingTask.setStatus(taskCreateDTO.getStatus());
+        existingTask.setPriority(taskCreateDTO.getPriority());
 
-        // Обновляем список исполнителей
         Set<User> executors = new HashSet<>();
-        if (executorIds != null) {
-            for (String executorId : executorIds) {
+        if (taskCreateDTO.getExecutorIds() != null) {
+            for (String executorId : taskCreateDTO.getExecutorIds()) {
                 userService.findById(executorId).ifPresent(executors::add);
             }
         }
@@ -75,7 +78,27 @@ public class TaskService {
         return taskRepository.save(existingTask);
     }
 
-    public void deleteTask(Integer taskId) {
+    public void deleteTaskById(Integer taskId) {
         taskRepository.deleteById(taskId);
+    }
+
+    public List<Task> getTasksByAuthor(String userId, TaskFilterDTO filterDto) {
+        Specification<Task> authorSpec = TaskSecuritySpecification.byAuthor(userId);
+        Specification<Task> additionalSpec = TaskAdditionalSpecification.getSpecification(filterDto);
+        Specification<Task> finalSpec = authorSpec.and(additionalSpec);
+
+        Pageable pageable = PageRequest.of(filterDto.getPage(), filterDto.getSize());
+        Page<Task> taskPage = taskRepository.findAll(finalSpec, pageable);
+        return taskPage.getContent();
+    }
+
+    public List<Task> getTasksByExecutor(String userId, TaskFilterDTO filterDto) {
+        Specification<Task> executorSpec = TaskSecuritySpecification.byExecutor(userId);
+        Specification<Task> additionalSpec = TaskAdditionalSpecification.getSpecification(filterDto);
+        Specification<Task> finalSpec = executorSpec.and(additionalSpec);
+
+        Pageable pageable = PageRequest.of(filterDto.getPage(), filterDto.getSize());
+        Page<Task> taskPage = taskRepository.findAll(finalSpec, pageable);
+        return taskPage.getContent();
     }
 }
