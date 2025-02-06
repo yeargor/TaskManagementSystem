@@ -42,6 +42,10 @@ Alternatively, you can create your own user. In our custom realm, users automati
 
 You can visit the [Keycloak admin panel](http://localhost:8080 "Keycloak admin panel")  to modify the properties of the "Yahor" realm and also to assign the "ROLE_ADMIN" role. The credentials for accessing this panel are the same as those for the administrator user of our custom realm.
 
+## Keycloak Host Issue
+
+By default, the docker-compose.yml file hardcodes the Keycloak hostname to 127.0.0.1 using extra_hosts.
+
 ## Additional Information
 Keycloak realm used by the application differs from the common one not only because it includes predefined user templates, but also because it features a custom Event Listener SPI. This custom SPI is used by Keycloak to send requests to the Spring service whenever user information changes and the corresponding database updates are required. User data is stored within Keycloak's local database.
 
